@@ -62,7 +62,7 @@ class Tracker extends \Maven\Tracking\BaseTracker {
 			return ; 
 		
 		//WE need to load the library
-		require_once __DIR__.'/autoload.php';
+		\Maven\Core\Loader::load(__DIR__, 'autoload.php');
 		
 		$tracker = new \UnitedPrototype\GoogleAnalytics\Tracker($this->getSetting( 'analyticsAccountId' ),$this->getSetting( 'domain' ) );
 		
