@@ -32,7 +32,7 @@ class Tracker extends \Maven\Tracking\BaseTracker {
 
 		$analyticsAccountId = "";
 		if ( $args && isset( $args[ 'analyticsAccountId' ] ) ) {
-			$$analyticsAccountId = $args[ 'analyticsAccountId' ];
+			$analyticsAccountId = $args[ 'analyticsAccountId' ];
 		}
 		
 		
@@ -56,21 +56,27 @@ class Tracker extends \Maven\Tracking\BaseTracker {
 		$this->addSettings( $defaultOptions );
 	}
 	
-	public function addTransaction ( \Maven\Tracking\ECommerceTransaction $transaction ){
+	public function addTransaction ( \Maven\Tracking\EcommerceTransaction $transaction ){
 		
-		if ( ! $transaction || ! $transaction->getOrderId() || ! $transaction->getTotal() )
-			return ; 
+		if ( !$transaction || !$transaction->getOrderId() || !$transaction->getTotal() ) {
+			return;
+		}
 		
+		\Maven\Loggers\Logger::log()->message( 'MavenGoogleAnalyticsTracker/Tracker/addTransaction: '.$this->getSetting( 'analyticsAccountId' ));
+
 		//WE need to load the library
-		\Maven\Core\Loader::load(__DIR__, 'autoload.php');
+		\Maven\Core\Loader::load(__DIR__, '/autoload.php');
 		
 		$tracker = new \UnitedPrototype\GoogleAnalytics\Tracker($this->getSetting( 'analyticsAccountId' ),$this->getSetting( 'domain' ) );
 		
 		$session = new \UnitedPrototype\GoogleAnalytics\Session();
 		
 		$visitor = new \UnitedPrototype\GoogleAnalytics\Visitor();
-		$visitor->setIpAddress($_SERVER['REMOTE_ADDR']);
-		$visitor->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+		
+		$request = \Maven\Core\Request::current();
+		
+		$visitor->setIpAddress($request->getIp());
+		$visitor->setUserAgent($request->getUserAgent());
 		
 		$gaTransaction = new \UnitedPrototype\GoogleAnalytics\Transaction();
 		$gaTransaction->setOrderId( $transaction->getOrderId() );
