@@ -81,7 +81,9 @@ class Tracker extends \Maven\Tracking\BaseTracker {
 		$gaTransaction = new \UnitedPrototype\GoogleAnalytics\Transaction();
 		$gaTransaction->setOrderId( $transaction->getOrderId() );
 		$gaTransaction->setTotal	( $transaction->getTotal() );
-
+		$gaTransaction->setShipping( $transaction->getShipping() );
+		$gaTransaction->setTax( $transaction->getTaxes());
+		
 		$items = $transaction->getItems();
 		
 		foreach ( $items as $item ){
