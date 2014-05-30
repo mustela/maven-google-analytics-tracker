@@ -16,6 +16,17 @@ namespace MavenGoogleAnalyticsTracker;
 // Exit if accessed directly 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+
+//If the validation was already loaded
+if ( ! class_exists( 'MavenValidation' ) )
+	require_once plugin_dir_path( __FILE__ ) . 'maven-validation.php';
+
+// Check if Maven is activate, if not, just return.
+if ( \MavenValidation::isMavenMissing() )
+	return;
+
+
+
 use Maven\Settings\OptionType,
 	Maven\Settings\Option;
 
