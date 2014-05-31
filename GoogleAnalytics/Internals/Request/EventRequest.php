@@ -40,6 +40,10 @@ class EventRequest extends Request {
 	 */
 	protected $event;
 	
+	/**
+	 * @var \UnitedPrototype\GoogleAnalytics\Page
+	 */
+	private $page;
 	
 	/**
 	 * @const int

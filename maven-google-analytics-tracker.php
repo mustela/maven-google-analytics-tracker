@@ -119,7 +119,32 @@ class Tracker extends \Maven\Tracking\BaseTracker {
 	
 	public function addEvent ( \Maven\Tracking\Event $event ){
 		
-		return false;
+		if ( !$event || !$event->getAction() ) {
+			return;
+		}
+		
+		\Maven\Loggers\Logger::log()->message( 'MavenGoogleAnalyticsTracker/Tracker/addEvent: '.$this->getSetting( 'analyticsAccountId' ).": {$event->toString()}" );
+
+		//WE need to load the library
+		\Maven\Core\Loader::load(__DIR__, '/autoload.php');
+		
+		$tracker = new \UnitedPrototype\GoogleAnalytics\Tracker($this->getSetting( 'analyticsAccountId' ),$this->getSetting( 'domain' ) );
+		$session = new \UnitedPrototype\GoogleAnalytics\Session();
+		$visitor = new \UnitedPrototype\GoogleAnalytics\Visitor();
+		
+		$request = \Maven\Core\Request::current();
+		
+		$visitor->setIpAddress($request->getIp());
+		$visitor->setUserAgent($request->getUserAgent());
+		
+		$gaEvent = new \UnitedPrototype\GoogleAnalytics\Event();
+		$gaEvent->setCategory( $event->getCategory() );
+		$gaEvent->setAction( $event->getAction() );
+		$gaEvent->setLabel($event->getLabel());
+		$gaEvent->setValue($event->getValue());
+		
+		$tracker->trackEvent($gaEvent, $session, $visitor);
+		 
 	}
 }
  
